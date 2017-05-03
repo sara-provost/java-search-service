@@ -8,7 +8,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import com.upmc.isd.galaxyapi.search.backend.SearchResultStream;
 
-@Path("/api/search")
+@Path("/search")
 public class Search {
 
 	@POST

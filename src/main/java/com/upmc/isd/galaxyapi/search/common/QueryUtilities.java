@@ -24,9 +24,6 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 	 * @param search
 	 * @return
 	 */
-
-
-	/*
 	public static SolrQuery buildQuery(CollectionSearch search){
 		SolrQuery query = new SolrQuery();
 		
@@ -86,11 +83,9 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 		
 		return query;
 	}
-	*/
 	/*
 	 * Does this really need to be a facet?
 	 */
-/*
 	private static void addDateRangeFacet(SolrQuery query, CollectionSearch queryInfo){
 		Date startDate, endDate;
 		
@@ -104,14 +99,14 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 			e.printStackTrace();
 		}	
 	}
-*/
+
 	/**
 	 * Build a date range  
 	 * @param query
 	 * @param search
 	 */
 	private static void addDateRange(SolrQuery query, CollectionSearch search){
-		/*
+
 		StringBuilder dateRangeBuilder = new StringBuilder();
 		
 		//set the to and from senddate values
@@ -136,7 +131,7 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 		
 		//if both values are blank assume the range is from * to now
 		query.addFilterQuery(dateRangeBuilder.toString());
-		*/
+
 	}
 	
 }
