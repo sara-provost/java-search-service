@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
-import com.upmc.isd.galaxyapi.search.model.CollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.HL7CollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.MARSCollectionSearch;
 
 /**
  * This class contains helper methods to build a Solr query. 
@@ -20,11 +21,11 @@ public class QueryUtilities {
 private static final String SEND_DATE_TIME = "SENDDATETIME";
 	
 	/**
-	 * Public method to build a valid Solr query from the Collection Search Object. 
+	 * Public method to build a valid Solr query from the HL7CollectionSearch Object. 
 	 * @param search
 	 * @return
 	 */
-	public static SolrQuery buildQuery(CollectionSearch search){
+	public static SolrQuery buildQuery(HL7CollectionSearch search){
 		SolrQuery query = new SolrQuery();
 		
 		
@@ -83,10 +84,29 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 		
 		return query;
 	}
+	
+	/**
+	 * Build a Solr Query from the MARSCollectionSearch object
+	 * @param search
+	 * @return
+	 */
+	public static SolrQuery buildQuery(MARSCollectionSearch search){
+		SolrQuery query = new SolrQuery();
+		query.setQuery(search.getQueryText());
+		
+		return query;
+	}
+	
+	public static SolrQuery buildQuery(String q){
+		SolrQuery query = new SolrQuery();
+		query.setQuery(q);
+		return query;
+	}
+	
 	/*
 	 * Does this really need to be a facet?
 	 */
-	private static void addDateRangeFacet(SolrQuery query, CollectionSearch queryInfo){
+	private static void addDateRangeFacet(SolrQuery query, HL7CollectionSearch queryInfo){
 		Date startDate, endDate;
 		
 		try {
@@ -105,7 +125,7 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 	 * @param query
 	 * @param search
 	 */
-	private static void addDateRange(SolrQuery query, CollectionSearch search){
+	private static void addDateRange(SolrQuery query, HL7CollectionSearch search){
 
 		StringBuilder dateRangeBuilder = new StringBuilder();
 		
@@ -133,5 +153,7 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 		query.addFilterQuery(dateRangeBuilder.toString());
 
 	}
+	
+	
 	
 }

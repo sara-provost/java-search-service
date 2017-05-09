@@ -32,7 +32,7 @@ public class TokenValidatorFilter implements ContainerRequestFilter{
 		}catch(Exception e){
 			
 		}	
-		
+		LoggingUtilities.log("User authorized");
 	}
 
 }

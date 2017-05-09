@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class CollectionSearch {
+public class HL7CollectionSearch {
 	
 	@JsonProperty("collection")
 	private String collection = null;
@@ -70,25 +70,32 @@ public class CollectionSearch {
 		this.queryText = queryText;
 	}
 	  
-	public CollectionSearch sendDateFrom(String sendDateFrom) {
+	public HL7CollectionSearch sendDateFrom(String sendDateFrom) {
 		this.sendDateFrom = sendDateFrom;
 		return this;
 	}
-	public CollectionSearch queryText(String queryText){
+	public HL7CollectionSearch queryText(String queryText){
 		  this.queryText = queryText;
 		  return this;
 	}
 	
-	public CollectionSearch messageIds(List<String> messageIds) {
+	public HL7CollectionSearch messageIds(List<String> messageIds) {
 	    this.messageIds = messageIds;
 	    return this;
 	 }
 
-	public CollectionSearch addMessageIdsItem(String messageIdsItem) {
+	public HL7CollectionSearch addMessageIdsItem(String messageIdsItem) {
 		this.messageIds.add(messageIdsItem);
 		return this;
 	}
-	  
+	
+	/**
+	 * Get the search Collection
+	 * @return
+	 */
+	public String getCollection(){
+		return collection;
+	}
 	   /**
 	   * Ids of messages. If present other criteria is ignored.
 	   * @return messageIds
@@ -127,7 +134,7 @@ public class CollectionSearch {
 	    this.sendDateFrom = sendDateFrom;
 	  }
 
-	  public CollectionSearch sendDateTo(String sendDateTo) {
+	  public HL7CollectionSearch sendDateTo(String sendDateTo) {
 	    this.sendDateTo = sendDateTo;
 	    return this;
 	  }
@@ -146,22 +153,22 @@ public class CollectionSearch {
 	    this.sendDateTo = sendDateTo;
 	  }
 
-	  public CollectionSearch componentIds(List<String> componentIds) {
+	  public HL7CollectionSearch componentIds(List<String> componentIds) {
 	    this.componentIds = componentIds;
 	    return this;
 	  }
 
-	  public CollectionSearch addComponentIdsItem(String componentIdsItem) {
+	  public HL7CollectionSearch addComponentIdsItem(String componentIdsItem) {
 	    this.componentIds.add(componentIdsItem);
 	    return this;
 	  }
 
 	   /**
-	   * Message components.
+	   * HL7Message components.
 	   * @return componentIds
 	  **/
 	  @JsonProperty("componentIds")
-	  @JsonPropertyDescription(value = "Message components.")
+	  @JsonPropertyDescription(value = "HL7Message components.")
 	  public List<String> getComponentIds() {
 	    return componentIds;
 	  }
@@ -170,7 +177,7 @@ public class CollectionSearch {
 	    this.componentIds = componentIds;
 	  }
 
-	  public CollectionSearch includeAcks(Boolean includeAcks) {
+	  public HL7CollectionSearch includeAcks(Boolean includeAcks) {
 	    this.includeAcks = includeAcks;
 	    return this;
 	  }
@@ -189,7 +196,7 @@ public class CollectionSearch {
 	    this.includeAcks = includeAcks;
 	  }
 
-	  public CollectionSearch ackIncludeFilter(String ackIncludeFilter) {
+	  public HL7CollectionSearch ackIncludeFilter(String ackIncludeFilter) {
 	    this.ackIncludeFilter = ackIncludeFilter;
 	    return this;
 	  }
@@ -208,17 +215,17 @@ public class CollectionSearch {
 	    this.ackIncludeFilter = ackIncludeFilter;
 	  }
 
-	  public CollectionSearch sortBy(String sortBy) {
+	  public HL7CollectionSearch sortBy(String sortBy) {
 	    this.sortBy = sortBy;
 	    return this;
 	  }
 
 	   /**
-	   * Message field to sort by.
+	   * HL7Message field to sort by.
 	   * @return sortBy
 	  **/
 	  @JsonProperty("sortBy")
-	  @JsonPropertyDescription(value = "Message field to sort by.")
+	  @JsonPropertyDescription(value = "HL7Message field to sort by.")
 	  public String getSortBy() {
 	    return sortBy;
 	  }
@@ -227,7 +234,7 @@ public class CollectionSearch {
 	    this.sortBy = sortBy;
 	  }
 
-	  public CollectionSearch sortDir(Integer sortDir) {
+	  public HL7CollectionSearch sortDir(Integer sortDir) {
 	    this.sortDir = sortDir;
 	    return this;
 	  }
@@ -246,7 +253,7 @@ public class CollectionSearch {
 	    this.sortDir = sortDir;
 	  }
 
-	  public CollectionSearch start(Integer start) {
+	  public HL7CollectionSearch start(Integer start) {
 	    this.start = start;
 	    return this;
 	  }
@@ -265,7 +272,7 @@ public class CollectionSearch {
 	    this.start = start;
 	  }
 
-	  public CollectionSearch end(Integer end) {
+	  public HL7CollectionSearch end(Integer end) {
 	    this.end = end;
 	    return this;
 	  }
@@ -293,7 +300,7 @@ public class CollectionSearch {
 	    if (o == null || getClass() != o.getClass()) {
 	      return false;
 	    }
-	    CollectionSearch queryInfo = (CollectionSearch) o;
+	    HL7CollectionSearch queryInfo = (HL7CollectionSearch) o;
 	    return Objects.equals(this.collection, queryInfo.collection) &&
 	        Objects.equals(this.messageIds, queryInfo.messageIds) &&
 	        Objects.equals(this.sendDateFrom, queryInfo.sendDateFrom) &&
