@@ -18,8 +18,9 @@ import com.upmc.isd.galaxyapi.search.common.LoggingUtilities;
 public class APISpecification {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	
+
 	public Response getDocumentation(){
 		LoggingUtilities.log("********** GETTING DOCUMENTATION **********");
+		return Response.ok().build();
 	}
 }

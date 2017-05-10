@@ -1,13 +1,26 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
 
-<web-app>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    					http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    version="3.0">
+
 	<display-name>Java Search REST service</display-name>
 	<context-param>
         <param-name>jersey.config.server.contentLength.buffer</param-name>
         <param-value>0</param-value>
     </context-param>
+    <servlet>
+    	<servlet-name>java-search</servlet-name>
+    	<servlet-class>com.upmc.isd.galaxyapi.search.SearchApplication</servlet-class>
+    </servlet>
+	<servlet-mapping>
+	    <servlet-name>java-search</servlet-name>
+	    <url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+	<!--
  	<servlet>
  	    <servlet-name>java-search-servlet</servlet-name>
  	    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -21,4 +34,5 @@
  	    <servlet-name>java-search-servlet</servlet-name>
  	    <url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
+	-->
 </web-app>

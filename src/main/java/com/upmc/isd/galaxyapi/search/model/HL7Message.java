@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  * @author provosts
  *
  */
-public class Message {
+public class HL7Message {
 	@JsonProperty("id")
 	private String id = null;
 	
@@ -34,7 +34,7 @@ public class Message {
 	@JsonProperty("transformFlow")
 	private String transformFlow = null;
 	
-	public Message id(String id) {
+	public HL7Message id(String id) {
 		this.id = id;
 		return this;
 	}
@@ -53,7 +53,7 @@ public class Message {
 	    this.id = id;
 	  }
 
-	  public Message msgType(Integer msgType) {
+	  public HL7Message msgType(Integer msgType) {
 	    this.msgType = msgType;
 	    return this;
 	  }
@@ -72,7 +72,7 @@ public class Message {
 	    this.msgType = msgType;
 	  }
 
-	  public Message sendDate(String sendDate) {
+	  public HL7Message sendDate(String sendDate) {
 	    this.sendDate = sendDate;
 	    return this;
 	  }
@@ -91,7 +91,7 @@ public class Message {
 	    this.sendDate = sendDate;
 	  }
 
-	  public Message component(String component) {
+	  public HL7Message component(String component) {
 	    this.component = component;
 	    return this;
 	  }
@@ -110,7 +110,7 @@ public class Message {
 	    this.component = component;
 	  }
 
-	  public Message rawText(String rawText) {
+	  public HL7Message rawText(String rawText) {
 	    this.rawText = rawText;
 	    return this;
 	  }
@@ -129,7 +129,7 @@ public class Message {
 	    this.rawText = rawText;
 	  }
 
-	  public Message receiverFlow(String receiverFlow) {
+	  public HL7Message receiverFlow(String receiverFlow) {
 	    this.receiverFlow = receiverFlow;
 	    return this;
 	  }
@@ -148,7 +148,7 @@ public class Message {
 	    this.receiverFlow = receiverFlow;
 	  }
 
-	  public Message transformFlow(String transformFlow) {
+	  public HL7Message transformFlow(String transformFlow) {
 	    this.transformFlow = transformFlow;
 	    return this;
 	  }
@@ -176,7 +176,7 @@ public class Message {
 	    if (o == null || getClass() != o.getClass()) {
 	      return false;
 	    }
-	    Message message = (Message) o;
+	    HL7Message message = (HL7Message) o;
 	    return Objects.equals(this.id, message.id) &&
 	        Objects.equals(this.msgType, message.msgType) &&
 	        Objects.equals(this.sendDate, message.sendDate) &&
@@ -195,7 +195,7 @@ public class Message {
 	  @Override
 	  public String toString() {
 	    StringBuilder sb = new StringBuilder();
-	    sb.append("class Message {\n");
+	    sb.append("class HL7Message {\n");
 	    
 	    sb.append("    id: ").append(toIndentedString(id)).append("\n");
 	    sb.append("    msgType: ").append(toIndentedString(msgType)).append("\n");
