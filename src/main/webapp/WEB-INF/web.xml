@@ -11,15 +11,44 @@
         <param-name>jersey.config.server.contentLength.buffer</param-name>
         <param-value>0</param-value>
     </context-param>
+    
+    <!-- This sort of works. -->
+    <servlet>
+      <servlet-name>SearchApplication</servlet-name>
+         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+         <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.upmc.isd.galaxyapi.search.SearchApplication</param-value>
+         </init-param>
+      </servlet>
+
+      <servlet-mapping>
+        <servlet-name>SearchApplication</servlet-name>
+        <url-pattern>/*</url-pattern>
+      </servlet-mapping>
+    <!--
+    <servlet>
+    	<servlet-name>com.upmc.isd.galaxyapi.SearchApplication</servlet-name>
+    </servlet>
+    <servlet-mapping>
+    	<servlet-name>com.upmc.isd.galaxyapi.SearchApplication</servlet-name>
+    	<url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    -->
+    <!--
     <servlet>
     	<servlet-name>java-search</servlet-name>
-    	<servlet-class>com.upmc.isd.galaxyapi.search.SearchApplication</servlet-class>
+    	<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    	<init-param>
+    		<param-name>org.glassfish.jersey.config.property.packages</param-name>
+    		<param-value>com.upmc.isd.galaxyapi.search.*</param-value>
+    	</init-param>
     </servlet>
 	<servlet-mapping>
 	    <servlet-name>java-search</servlet-name>
 	    <url-pattern>/*</url-pattern>
 	</servlet-mapping>
-	
+	-->
 	<!--
  	<servlet>
  	    <servlet-name>java-search-servlet</servlet-name>
