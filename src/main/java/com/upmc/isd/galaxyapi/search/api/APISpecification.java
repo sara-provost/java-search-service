@@ -20,7 +20,6 @@ public class APISpecification {
 	@Produces(MediaType.TEXT_HTML)
 
 	public Response getDocumentation(){
-		LoggingUtilities.log("********** GETTING DOCUMENTATION **********");
 		return Response.ok().build();
 	}
 }

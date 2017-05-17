@@ -18,7 +18,7 @@ import com.upmc.isd.galaxyapi.search.model.MARSCollectionSearch;
  */
 public class QueryUtilities {
 	
-private static final String SEND_DATE_TIME = "SENDDATETIME";
+	private static final String SEND_DATE_TIME = "SENDDATETIME";
 	
 	/**
 	 * Public method to build a valid Solr query from the HL7CollectionSearch Object. 
@@ -28,58 +28,48 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 	public static SolrQuery buildQuery(HL7CollectionSearch search){
 		SolrQuery query = new SolrQuery();
 		
-		
+		/*
+		 * Build a query from the RECKEYs if present. 
+		 */
 		if(search.getMessageIds().size() > 0){
-			StringBuilder mIds = new StringBuilder();
-			mIds.append("RECKEY:");
-			for(int i = 0; i < search.getMessageIds().size(); i++){
-
-				String m = search.getMessageIds().get(i);
-				mIds.append(m);
-				
-				if(i == search.getMessageIds().size() - 1){
-					break;
-				}
-				mIds.append(" OR ");	
-				mIds.append("RECKEY:");
-				
-				
-			}
+			setRecKeys(query, search);
 			
-			query.setQuery(mIds.toString());
-		
 		}
+		/*
+		 * If there are no RECKEYS, build a query from the provided query. 
+		 */
+		else if(search.getQueryText() != null && !search.getQueryText().isEmpty()){
+			query.setQuery(search.getQueryText());
+		}
+		/*
+		 * If there is no queryText, nor RECKEYS, build the default query. 
+		 */
 		else{
-			if(!search.getQueryText().isEmpty()){
-				query.setQuery(search.getQueryText());
-			}
-			//add a date filter no matter what
-			addDateRange(query, search);
-			if(!search.getComponentIds().isEmpty()){
-				
-			}
-			if(search.getIncludeAcks() != null){
-				
-			}
-			if(!search.getAckIncludeFilter().isEmpty()){
-				
-			}
-			//the default in solr is descending
-			if(search.getSortDir() == 0 && !search.getSortBy().isEmpty()){
-				query.addOrUpdateSort(search.getSortBy(), ORDER.asc);
-			}
-			if(search.getStart() != null){
-				query.setStart(search.getStart());
-			}
-			if(search.getEnd() != null){
-				query.setRows(search.getEnd());
-			}
-	
-		}
-		//query.setRequestHandler("/select");
+			query.setQuery("*:*");
+		}	
 		
+		
+		//add a date filter no matter what
+		addDateRange(query, search);
+		if(!search.getComponentIds().isEmpty()){
+			
+		}
+		if(search.getIncludeAcks() != null){
+			
+		}
+		if(!search.getAckIncludeFilter().isEmpty()){
+			
+		}
+		setSort(query, search.getSortBy(), search.getSortDir());
+		//to support deep paging, this value must always be zero
+		query.setStart(0);
+
+		setRows(query, search.getEnd());
+		setHL7FL(query, search);
+		setCursorMark(query, search);
 		LoggingUtilities.log("********** BUILT QUERY **********");
 		LoggingUtilities.log(query.toString());
+		
 		
 		
 		return query;
@@ -92,6 +82,26 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 	 */
 	public static SolrQuery buildQuery(MARSCollectionSearch search){
 		SolrQuery query = new SolrQuery();
+		
+		if(search.getRecKeys() != null || search.getRecKeys().size() > 0){
+			StringBuilder mIds = new StringBuilder();
+			mIds.append("RECKEY:");
+			for(int i = 0; i < search.getRecKeys().size(); i++){
+
+				String m = search.getRecKeys().get(i);
+				mIds.append(m);
+				
+				if(i == search.getRecKeys().size() - 1){
+					break;
+				}
+				mIds.append(" OR ");	
+				mIds.append("RECKEY:");
+				
+				
+			}	
+			query.setQuery(mIds.toString());
+			return query;
+		}
 		query.setQuery(search.getQueryText());
 		
 		return query;
@@ -154,6 +164,129 @@ private static final String SEND_DATE_TIME = "SENDDATETIME";
 
 	}
 	
+	/**
+	 * Set the fields to be returned an HL7 collection request.  
+	 * @param query
+	 * @param search
+	 */
+	private static void setHL7FL(SolrQuery query, HL7CollectionSearch search){ //TODO:some fields are still missing
+		query.setParam("fl", "SENDDATETIME", "RECKEY", search.getSortBy().trim(), "MESSAGEID");
+	}
 	
+	/**
+	 * Set the fields to be returned on a MARS collection request. 
+	 * @param query
+	 * @param search
+	 */
+	private static void setMARSFL(SolrQuery query, MARSCollectionSearch search){
+		
+	}
 	
+	/**
+	 * Set the cursormark on the HL7 request. 
+	 */
+	private static void setCursorMark(SolrQuery query, HL7CollectionSearch search){
+		if(search.getCursorMark() == null || search.getCursorMark().equals("")){
+			query.set("cursorMark", "*");
+		}
+		else{
+			query.set("cursorMark", search.getCursorMark());
+		}
+	}
+	
+	/**
+	 * Set the cursor mark on the MARS search request. 
+	 * @param query
+	 * @param search
+	 */
+	private static void setCursorMark(SolrQuery query, MARSCollectionSearch search){
+		if(search.getCursorMark() == null || search.getCursorMark().equals("")){
+			query.set("cursorMark", "*");
+		}
+		else{
+			query.set("cursorMark", search.getCursorMark());
+		}
+	}
+	
+	/**
+	 * Build a query from the RECKEYs in the request. 
+	 * @param query
+	 * @param search
+	 */
+	private static void setRecKeys(SolrQuery query, HL7CollectionSearch search){
+		StringBuilder mIds = new StringBuilder();
+		mIds.append("RECKEY:");
+		for(int i = 0; i < search.getMessageIds().size(); i++){
+
+			String m = search.getMessageIds().get(i);
+			mIds.append(m);
+			
+			if(i == search.getMessageIds().size() - 1){
+				break;
+			}
+			mIds.append(" OR ");	
+			mIds.append("RECKEY:");
+			
+			
+		}
+		
+		query.setQuery(mIds.toString());
+	}
+	
+	/**
+	 * Build a query from the RECKEYs in the request.
+	 * @param query
+	 * @param search
+	 */
+	private static void setRecKeys(SolrQuery query, MARSCollectionSearch search){
+		StringBuilder mIds = new StringBuilder();
+		mIds.append("RECKEY:");
+		for(int i = 0; i < search.getRecKeys().size(); i++){
+
+			String m = search.getRecKeys().get(i);
+			mIds.append(m);
+			
+			if(i == search.getRecKeys().size() - 1){
+				break;
+			}
+			mIds.append(" OR ");	
+			mIds.append("RECKEY:");
+			
+			
+		}
+		
+		query.setQuery(mIds.toString());
+	}
+	
+	/**
+	 * Set the sort of the query. There must always be a sort parameter. 
+	 * @param query
+	 * @param sort
+	 * @param direction
+	 */
+	private static void setSort(SolrQuery query, String sort, int direction){
+		if(sort == null || sort.isEmpty()){
+			query.setSort("RECKEY", ORDER.desc);			
+		}
+		else{
+			if(direction == 0){
+				query.setSort(sort, ORDER.asc);
+			}
+			else{
+				query.setSort(sort, ORDER.desc);
+			}
+		}
+	}
+	
+	/**
+	 * Set the number of rows to return
+	 * @param query
+	 * @param rows
+	 */
+	private static void setRows(SolrQuery query, int rows){
+		if(rows > 0){
+			query.setRows(rows);
+		}
+		
+	}
 }

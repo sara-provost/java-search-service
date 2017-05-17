@@ -1,5 +1,7 @@
 package com.upmc.isd.galaxyapi.search.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * GalaxyError
  * This is the standard error as specifed in the document here: 
@@ -7,11 +9,26 @@ package com.upmc.isd.galaxyapi.search.model;
  * @author provosts
  *
  */
-public class GalaxyError extends Exception{
+public class GalaxyError{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1679099039978152070L;
-
+	@JsonProperty("friendlyMsg")
+	private String friendlyMsg;
+	
+	@JsonProperty("description")
+	private String description;
+	
+	@JsonProperty("type")
+	private String type;
+	
+	public void setFriendlyMsg(String fMsg){
+		this.friendlyMsg = fMsg;
+	}
+	
+	public void setDescription(String description){
+		this.description = description;
+	}
+	
+	public void setType(String type){
+		this.type = type;
+	}
 }

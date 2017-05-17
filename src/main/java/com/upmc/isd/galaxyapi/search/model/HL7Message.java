@@ -1,48 +1,92 @@
 package com.upmc.isd.galaxyapi.search.model;
 
+import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * The message class is the return object of this sevice. 
+ * The message class is the HL7 message return object for this service.  
  * The specification for this object can be found here: 
  * https://eti.shp.upmc.com/systemintegration/IIB/_layouts/15/WopiFrame.aspx?sourcedoc=/systemintegration/IIB/Shared%20Documents/Architecture/ETI%20-%20Message%20Router%20Transformation%20-%20Design.docx&action=default
  * @author provosts
  *
  */
-public class HL7Message {
-	@JsonProperty("id")
-	private String id = null;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class HL7Message{
 	
+	
+	@JsonProperty("reckey")
+	private String reckey = null;
+	
+	@JsonProperty("messageId")
+	private String messageId;
+	
+	/*
 	@JsonProperty("msgType")
 	private Integer msgType = null;
-	
-	@JsonProperty("sendDate")
-	private String sendDate = null;
-	
+		
 	@JsonProperty("component")
 	private String component = null;
-	
-	@JsonProperty("rawText")
-	private String rawText = null;
-	
+
 	@JsonProperty("receiverFlow")
 	private String receiverFlow = null;
 	
 	@JsonProperty("transformFlow")
 	private String transformFlow = null;
+	*/
 	
+	@JsonProperty("sendDate")
+	private Date sendDate = null;
+	
+	
+	@JsonSetter("SENDDATETIME")
+	public void setSendDate(Date date){
+		this.sendDate = date;
+	}
+	
+	@JsonGetter("sendDate")
+	public Date getSendDate(){
+		return sendDate;
+	}
+	
+	@JsonSetter("reckey")
+	public void setRECKEY(String reckey){
+		this.reckey = reckey;
+	}
+	
+	@JsonGetter("reckey")
+	public String getRecKey(){
+		return reckey;
+	}
+	
+	public void setMessageId(String messageId){
+		this.messageId = messageId;
+	}
+	
+	@JsonGetter("messageId")
+	public String getMessageId(){
+		return messageId;
+	}
+	
+	
+	
+	
+	
+	
+	/*
 	public HL7Message id(String id) {
 		this.id = id;
 		return this;
 	}
+	
+	
+	
 
-	   /**
-	   * The message id.
-	   * @return id
-	  **/
 	  @JsonProperty("id")
 	  @JsonPropertyDescription(value = "The message id.")
 	  public String getId() {
@@ -58,10 +102,7 @@ public class HL7Message {
 	    return this;
 	  }
 
-	   /**
-	   * 0 means message. 1 means acknowledgement.
-	   * @return msgType
-	  **/
+
 	  @JsonProperty("msgType")
 	  @JsonPropertyDescription(value = "0 means message. 1 means acknowledgement.")
 	  public Integer getMsgType() {
@@ -77,10 +118,6 @@ public class HL7Message {
 	    return this;
 	  }
 
-	   /**
-	   * date and time the message was sent
-	   * @return sendDate
-	  **/
 	  @JsonProperty("sendDate")
 	  @JsonPropertyDescription(value = "date and time the message was sent")
 	  public String getSendDate() {
@@ -96,10 +133,7 @@ public class HL7Message {
 	    return this;
 	  }
 
-	   /**
-	   * The component the message is associated with.
-	   * @return component
-	  **/
+
 	  @JsonProperty("component")
 	  @JsonPropertyDescription(value = "The component the message is associated with.")
 	  public String getComponent() {
@@ -109,35 +143,13 @@ public class HL7Message {
 	  public void setComponent(String component) {
 	    this.component = component;
 	  }
-
-	  public HL7Message rawText(String rawText) {
-	    this.rawText = rawText;
-	    return this;
-	  }
-
-	   /**
-	   * The textual content of the message.
-	   * @return rawText
-	  **/
-	  @JsonProperty("rawText")
-	  @JsonPropertyDescription(value = "The textual content of the message.")
-	  public String getRawText() {
-	    return rawText;
-	  }
-
-	  public void setRawText(String rawText) {
-	    this.rawText = rawText;
-	  }
-
+	  
 	  public HL7Message receiverFlow(String receiverFlow) {
 	    this.receiverFlow = receiverFlow;
 	    return this;
 	  }
 
-	   /**
-	   * The path the messsage took when sent.
-	   * @return receiverFlow
-	  **/
+
 	  @JsonProperty("receiverFlow")
 	  @JsonPropertyDescription(value = "The path the messsage took when sent.")
 	  public String getReceiverFlow() {
@@ -153,10 +165,7 @@ public class HL7Message {
 	    return this;
 	  }
 
-	   /**
-	   * The transformations the message underwent.
-	   * @return transformFlow
-	  **/
+
 	  @JsonProperty("transformFlow")
 	  @JsonPropertyDescription(value = "The transformations the message underwent.")
 	  public String getTransformFlow() {
@@ -181,14 +190,13 @@ public class HL7Message {
 	        Objects.equals(this.msgType, message.msgType) &&
 	        Objects.equals(this.sendDate, message.sendDate) &&
 	        Objects.equals(this.component, message.component) &&
-	        Objects.equals(this.rawText, message.rawText) &&
 	        Objects.equals(this.receiverFlow, message.receiverFlow) &&
 	        Objects.equals(this.transformFlow, message.transformFlow);
 	  }
 
 	  @Override
 	  public int hashCode() {
-	    return Objects.hash(id, msgType, sendDate, component, rawText, receiverFlow, transformFlow);
+	    return Objects.hash(id, msgType, sendDate, component, receiverFlow, transformFlow);
 	  }
 
 
@@ -201,7 +209,6 @@ public class HL7Message {
 	    sb.append("    msgType: ").append(toIndentedString(msgType)).append("\n");
 	    sb.append("    sendDate: ").append(toIndentedString(sendDate)).append("\n");
 	    sb.append("    component: ").append(toIndentedString(component)).append("\n");
-	    sb.append("    rawText: ").append(toIndentedString(rawText)).append("\n");
 	    sb.append("    receiverFlow: ").append(toIndentedString(receiverFlow)).append("\n");
 	    sb.append("    transformFlow: ").append(toIndentedString(transformFlow)).append("\n");
 	    sb.append("}");
@@ -217,21 +224,19 @@ public class HL7Message {
 		    sb.append("    msgType: ").append(toIndentedString(msgType)).append("\n");
 		    sb.append("    sendDate: ").append(toIndentedString(sendDate)).append("\n");
 		    sb.append("    component: ").append(toIndentedString(component)).append("\n");
-		    sb.append("    rawText: ").append(toIndentedString(rawText)).append("\n");
 		    sb.append("    receiverFlow: ").append(toIndentedString(receiverFlow)).append("\n");
 		    sb.append("    transformFlow: ").append(toIndentedString(transformFlow)).append("\n");
 		    sb.append("}");
 		    return sb.toString();
 	  }
 
-	  /**
-	   * Convert the given object to string with each line indented by 4 spaces
-	   * (except the first line).
-	   */
+
 	  private String toIndentedString(java.lang.Object o) {
 	    if (o == null) {
 	      return "null";
 	    }
 	    return o.toString().replace("\n", "\n    ");
 	  }
+	  
+	  */
 }

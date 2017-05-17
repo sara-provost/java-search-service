@@ -19,6 +19,8 @@ public class TokenValidatorFilter implements ContainerRequestFilter{
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+		String contentType = requestContext.getHeaderString(HttpHeaders.CONTENT_TYPE);
+		LoggingUtilities.log(contentType);
 		
 		if(authHeader == null){
 			//TODO: throw authorization exception

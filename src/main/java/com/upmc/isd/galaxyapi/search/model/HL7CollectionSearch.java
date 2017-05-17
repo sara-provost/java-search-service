@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class HL7CollectionSearch {
 	
+	public HL7CollectionSearch(){}
+	
 	@JsonProperty("collection")
 	private String collection = null;
 	
@@ -51,14 +53,20 @@ public class HL7CollectionSearch {
 	@JsonProperty("sortDir")
 	private Integer sortDir = null;
 	
-	@JsonProperty("start")
-	private Integer start = null;
-	
 	@JsonProperty("end")
 	private Integer end = null;
+	
+	@JsonProperty("cursorMark")
+	private String cursorMark = null;
 	  
-	  
-	  
+	public void setCursorMark(String cursorMark){
+		this.cursorMark = cursorMark;
+	}
+	
+	public String getCursorMark(){
+		return cursorMark;
+	}
+	
 	 /**
 	  * Setters
 	 */
@@ -253,24 +261,6 @@ public class HL7CollectionSearch {
 	    this.sortDir = sortDir;
 	  }
 
-	  public HL7CollectionSearch start(Integer start) {
-	    this.start = start;
-	    return this;
-	  }
-
-	   /**
-	   * Used for paging. Result range to start with.
-	   * @return start
-	  **/
-	  @JsonProperty("start")
-	  @JsonPropertyDescription(value = "Used for paging. Result range to start with.")
-	  public Integer getStart() {
-	    return start;
-	  }
-
-	  public void setStart(Integer start) {
-	    this.start = start;
-	  }
 
 	  public HL7CollectionSearch end(Integer end) {
 	    this.end = end;
@@ -310,13 +300,12 @@ public class HL7CollectionSearch {
 	        Objects.equals(this.ackIncludeFilter, queryInfo.ackIncludeFilter) &&
 	        Objects.equals(this.sortBy, queryInfo.sortBy) &&
 	        Objects.equals(this.sortDir, queryInfo.sortDir) &&
-	        Objects.equals(this.start, queryInfo.start) &&
 	        Objects.equals(this.end, queryInfo.end);
 	  }
 
 	  @Override
 	  public int hashCode() {
-	    return Objects.hash(collection, messageIds, sendDateFrom, sendDateTo, componentIds, includeAcks, ackIncludeFilter, sortBy, sortDir, start, end);
+	    return Objects.hash(collection, messageIds, sendDateFrom, sendDateTo, componentIds, includeAcks, ackIncludeFilter, sortBy, sortDir, end);
 	  }
 
 
@@ -335,7 +324,6 @@ public class HL7CollectionSearch {
 	    sb.append("    ackIncludeFilter: ").append(toIndentedString(ackIncludeFilter)).append("\n");
 	    sb.append("    sortBy: ").append(toIndentedString(sortBy)).append("\n");
 	    sb.append("    sortDir: ").append(toIndentedString(sortDir)).append("\n");
-	    sb.append("    start: ").append(toIndentedString(start)).append("\n");
 	    sb.append("    end: ").append(toIndentedString(end)).append("\n");
 	    sb.append("}");
 	    return sb.toString();

@@ -4,72 +4,70 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.inject.Singleton;
+
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrResponse;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.util.NamedList;
+
+import com.upmc.isd.galaxyapi.search.common.LoggingUtilities;
+import com.upmc.isd.galaxyapi.search.common.ResponseUtilities;
+import com.upmc.isd.galaxyapi.search.model.HL7SearchResponse;
+import com.upmc.isd.galaxyapi.search.model.SearchException;
 
 /**
  * 
  * @author provosts
  *
  */
-public class SolrService {
+
+
+@Resource
+public class SolrService extends SolrConnector{
 	
 	
-	private static final Collection<String> ZKHOSTS = Arrays.asList("z01dev01.isd.upmc.edu:2181/solr");
-	private static final String URL_STRING = "http://z01dev01.isd.upmc.edu:8983/solr/";
-	
-	private SolrClient client;
-	private CloudSolrClient cloudClient;
-	
-	/**
-	 * initialize the connection to Solr.
-	 */
-	private void initializeClient(){
-		client = new HttpSolrClient.Builder(URL_STRING).build();
+	public SolrService(){
+		super();
 	}
 	
-	/**
-	 * initialize the connection to Solr Cloud. 
-	 */
-	private void initializeCloudClient(){
-		cloudClient = new CloudSolrClient.Builder().withZkHost(ZKHOSTS).build();
-		cloudClient.setIdField("RECKEY");		
-		cloudClient.setZkConnectTimeout(300000);
-		cloudClient.setRetryExpiryTime(5);
-		cloudClient.connect();
-	}
-	
-	/**
-	 * Return the CloudSolrClient instance
-	 * @return
-	 */
-	public CloudSolrClient getCloudClient(){
-		if(this.cloudClient != null){
-			initializeCloudClient();
-		}
+	public HL7SearchResponse doHL7Operation(SolrOperation operation) throws SearchException{
+		HL7SearchResponse response = null;
 		
-		return cloudClient;
-	}
-	
-	/**
-	 * Return the Solr Client instance. 
-	 * @return
-	 */
-	public SolrClient getClient(){
-		if(this.client != null){
-			initializeCloudClient();
+		try {
+			QueryResponse queryResponse = super.getClient().query(operation.getCollection().trim(), operation.getSolrQuery());
+			if(queryResponse.getStatus() == 404){
+				throw new SearchException();
+			}
+			else{
+				response = ResponseUtilities.mapToHL7Response(queryResponse);
+				return response;
+			}
+			//response = super.getClient().query(operation.getSolrQuery());
+		} catch (SolrServerException | IOException e) {
+			throw new SearchException();
 		}
-		
-		return client;
 	}
 	
-	/**
-	 * Close the connection to Solr
-	 * @throws IOException
-	 */
-	public void close() throws IOException{
-		cloudClient.close();
-		client.close();
+	public void doMARSOperation(SolrOperation operation) throws SearchException{
+		QueryResponse response = null;
+		
+		try {
+			response = super.getClient().query(operation.getCollection().trim(), operation.getSolrQuery());
+			
+			if(response.getStatus() == 404){
+				throw new SearchException();
+			}
+			else{
+				
+			}
+		} catch (SolrServerException | IOException e) {
+			throw new SearchException();
+		}
 	}
 }
