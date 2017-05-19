@@ -1,4 +1,4 @@
-package com.upmc.isd.galaxyapi.search.model;
+package com.upmc.isd.galaxyapi.search.model.hl7;
 
 import java.util.Date;
 import java.util.Objects;

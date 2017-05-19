@@ -10,11 +10,17 @@ import java.util.List;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.upmc.isd.galaxyapi.search.model.HL7Message;
-import com.upmc.isd.galaxyapi.search.model.HL7SearchResponse;
-import com.upmc.isd.galaxyapi.search.model.MARSSearchResponse;
 import com.upmc.isd.galaxyapi.search.model.SearchException;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7Message;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7SearchResponse;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSMessage;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSSearchResponse;
 
+/**
+ * Utility class containing response mapping methods. 
+ * @author provos_adm
+ *
+ */
 public class ResponseUtilities {
 	
 	public static HL7SearchResponse mapToHL7Response(QueryResponse response) throws SearchException{
@@ -52,12 +58,64 @@ public class ResponseUtilities {
 	
 	public static MARSSearchResponse mapToMARSMessage(QueryResponse response){
 		MARSSearchResponse marsResponse = new MARSSearchResponse();
+		List<MARSMessage> messages = new ArrayList<MARSMessage>();
 		
+		List<SolrDocument> docs = response.getResults();
+		
+		for(SolrDocument d: docs){
+			MARSMessage m = new MARSMessage();
+			mapMARSSolrDocument(m, d);
+			messages.add(m);
+		}
+		
+		marsResponse.setTotal(response.getResults().getNumFound());
+		marsResponse.setCursorMark(response.getNextCursorMark());
+		marsResponse.setMessages(messages);
 		
 		return marsResponse;
 	}
 	
+	private static void mapMARSSolrDocument(MARSMessage m, SolrDocument d){
+		
+		if(d.get("KEY") != null){
+			m.setKey((String) d.get("KEY"));
+		}
+		if(d.get("RECORD_TYPE.DESCRIPTION") != null){
+			m.setSubtype((String)d.get("RECORD_TYPE.DESCRIPTION"));
+		}
+		if(d.get("SOURCE_KEY") != null){
+			m.setSPNO((String)d.get("SOURCE_KEY"));
+		}
+		if(d.get("RECORD_DATE") != null){
+			m.setRecordDate((Date)d.get("RECORD_DATE"));
+		}
+		if(d.get("PQNO") != null){
+			m.setPQNO((String)d.get("PQNO"));
+		}
+		if(d.get("SENDING_APPLICATION.CODE") != null || (d.get("SENDING_APPLICATION.CODE_SYSTEM") != null || d.get("SENDING_APPLICATION.DESCRIPTION") != null)){
+			m.setSendingApplication((String) d.get("SENDING_APPLICATION.CODE"), (String) d.get("SENDING_APPLICATION.CODE_SYSTEM"), (String) d.get("SENDING_APPLICATION.DESCRIPTION")); 
+		}
+		if(d.get("FACILITY.CODE") != null || d.get("FACILTY.CODE_SYSTEM") != null || d.get("FACILTY.DESCRIPTION") != null){
+			m.setFacility((String) d.get("FACILITY.CODE"), (String) d.get("FACILTY.CODE_SYSTEM"), (String) d.get("FACILTY.DESCRIPTION"));
+		}
+		if(d.get("NAME") != null){
+			m.setPatientName((String)d.get("NAME"));
+		}
+		if(d.get("MRN.ID") != null || d.get("MRN.SOURCE") != null){
+			m.setMRN((String) d.get("MRN.ID"), (String) d.get("MRN.SOURCE"));
+		}
+		if(d.get("BODY") != null){
+			m.setRecordBody((String)d.get("BODY"));
+		}
+		 
+		  
+	}
 	
+	/**
+	 * Map the Solr document from the response to the HL7Message object. 
+	 * @param m
+	 * @param d
+	 */
 	private static void mapHL7SolrDocument(HL7Message m, SolrDocument d){
 		
 		if(d.get("MESSAGEID") != null){

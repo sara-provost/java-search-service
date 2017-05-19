@@ -18,8 +18,10 @@ import org.apache.solr.common.util.NamedList;
 
 import com.upmc.isd.galaxyapi.search.common.LoggingUtilities;
 import com.upmc.isd.galaxyapi.search.common.ResponseUtilities;
-import com.upmc.isd.galaxyapi.search.model.HL7SearchResponse;
+import com.upmc.isd.galaxyapi.search.model.GalaxyError;
 import com.upmc.isd.galaxyapi.search.model.SearchException;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7SearchResponse;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSSearchResponse;
 
 /**
  * 
@@ -54,19 +56,24 @@ public class SolrService extends SolrConnector{
 		}
 	}
 	
-	public void doMARSOperation(SolrOperation operation) throws SearchException{
-		QueryResponse response = null;
+	public MARSSearchResponse doMARSOperation(SolrOperation operation) throws SearchException{
+		MARSSearchResponse response = null;
 		
 		try {
-			response = super.getClient().query(operation.getCollection().trim(), operation.getSolrQuery());
-			
-			if(response.getStatus() == 404){
+			QueryResponse queryResponse = super.getClient().query(operation.getCollection().trim(), operation.getSolrQuery());
+			if(queryResponse.getStatus() == 404){
 				throw new SearchException();
 			}
 			else{
-				
+				response = ResponseUtilities.mapToMARSMessage(queryResponse);
+				return response;
 			}
 		} catch (SolrServerException | IOException e) {
+			GalaxyError error = new GalaxyError();
+			error.setFriendlyMsg(e.getMessage());
+			error.setDescription(e.getStackTrace()[0].toString());
+			error.setType(e.getCause().getMessage());
+			
 			throw new SearchException();
 		}
 	}

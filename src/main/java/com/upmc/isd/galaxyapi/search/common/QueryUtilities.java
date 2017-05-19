@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
-import com.upmc.isd.galaxyapi.search.model.HL7CollectionSearch;
-import com.upmc.isd.galaxyapi.search.model.MARSCollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7CollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSCollectionSearch;
 
 /**
  * This class contains helper methods to build a Solr query. 
@@ -66,7 +66,7 @@ public class QueryUtilities {
 
 		setRows(query, search.getEnd());
 		setHL7FL(query, search);
-		setCursorMark(query, search);
+		setCursorMark(query, search.getCursorMark());
 		LoggingUtilities.log("********** BUILT QUERY **********");
 		LoggingUtilities.log(query.toString());
 		
@@ -81,28 +81,41 @@ public class QueryUtilities {
 	 * @return
 	 */
 	public static SolrQuery buildQuery(MARSCollectionSearch search){
-		SolrQuery query = new SolrQuery();
+		SolrQuery query = null;
 		
-		if(search.getRecKeys() != null || search.getRecKeys().size() > 0){
-			StringBuilder mIds = new StringBuilder();
-			mIds.append("RECKEY:");
-			for(int i = 0; i < search.getRecKeys().size(); i++){
+		if(search != null){
+			query = new SolrQuery();
+			if(search.getKeys() != null && search.getKeys().size() > 0){
+				StringBuilder mIds = new StringBuilder();
+				mIds.append("KEY:");
+				for(int i = 0; i < search.getKeys().size(); i++){
 
-				String m = search.getRecKeys().get(i);
-				mIds.append(m);
-				
-				if(i == search.getRecKeys().size() - 1){
-					break;
-				}
-				mIds.append(" OR ");	
-				mIds.append("RECKEY:");
-				
-				
-			}	
-			query.setQuery(mIds.toString());
-			return query;
+					String m = search.getKeys().get(i);
+					mIds.append(m);
+					
+					if(i == search.getKeys().size() - 1){
+						break;
+					}
+					mIds.append(" OR ");	
+					mIds.append("RECKEY:");
+					
+					
+				}	
+				query.setQuery(mIds.toString());
+				return query;
+			}
+			query.setQuery(search.getQueryText());
+			query.setStart(0); //the start must always be 0. 
+			setRows(query, search.getRows());
+			setSort(query, search);
+			setMARSFL(query, search);
+			setCursorMark(query, search.getCursorMark());
+			
 		}
-		query.setQuery(search.getQueryText());
+		LoggingUtilities.log("********** BUILT QUERY **********");
+		LoggingUtilities.log(query.toString());
+		
+		
 		
 		return query;
 	}
@@ -179,32 +192,21 @@ public class QueryUtilities {
 	 * @param search
 	 */
 	private static void setMARSFL(SolrQuery query, MARSCollectionSearch search){
-		
+		query.setParam("fl", "KEY", "RECORD_TYPE.DESCRIPTION", "SOURCE_KEY", "RECORD_DATE", "PQNO", "SENDING_APPLICATION.CODE", "SENDING_APPLICATION.CODE_SYSTEM", "SENDING_APPLICATION.DESCRIPTION", "FACILITY.CODE", "FACILTY.CODE_SYSTEM", "FACILITY.DESCRIPTION", "NAME", "MRN.ID", "MRN.SOURCE", "BODY");
 	}
 	
 	/**
-	 * Set the cursormark on the HL7 request. 
-	 */
-	private static void setCursorMark(SolrQuery query, HL7CollectionSearch search){
-		if(search.getCursorMark() == null || search.getCursorMark().equals("")){
-			query.set("cursorMark", "*");
-		}
-		else{
-			query.set("cursorMark", search.getCursorMark());
-		}
-	}
-	
-	/**
-	 * Set the cursor mark on the MARS search request. 
+	 * Set the cursorMark on the Solr query.
+	 * If there is no cursorMark assume it is a new search. 
 	 * @param query
-	 * @param search
+	 * @param cursorMark
 	 */
-	private static void setCursorMark(SolrQuery query, MARSCollectionSearch search){
-		if(search.getCursorMark() == null || search.getCursorMark().equals("")){
+	private static void setCursorMark(SolrQuery query, String cursorMark){
+		if(cursorMark == null || cursorMark.equals("")){
 			query.set("cursorMark", "*");
 		}
 		else{
-			query.set("cursorMark", search.getCursorMark());
+			query.set("cursorMark", cursorMark);
 		}
 	}
 	
@@ -240,17 +242,17 @@ public class QueryUtilities {
 	 */
 	private static void setRecKeys(SolrQuery query, MARSCollectionSearch search){
 		StringBuilder mIds = new StringBuilder();
-		mIds.append("RECKEY:");
-		for(int i = 0; i < search.getRecKeys().size(); i++){
+		mIds.append("KEY:");
+		for(int i = 0; i < search.getKeys().size(); i++){
 
-			String m = search.getRecKeys().get(i);
+			String m = search.getKeys().get(i);
 			mIds.append(m);
 			
-			if(i == search.getRecKeys().size() - 1){
+			if(i == search.getKeys().size() - 1){
 				break;
 			}
 			mIds.append(" OR ");	
-			mIds.append("RECKEY:");
+			mIds.append("KEY:");
 			
 			
 		}
@@ -278,6 +280,25 @@ public class QueryUtilities {
 		}
 	}
 	
+	/**
+	 * Set the sort parameter of a MARSCollectionSearch. 
+	 * @param query
+	 * @param search
+	 */
+	private static void setSort(SolrQuery query, MARSCollectionSearch search){
+		//default to descending order on the record key. 
+		if(search.getSortBy() == null || search.getSortBy().isEmpty()){
+			query.setSort("KEY", ORDER.desc);			
+		}
+		else{
+			if(search.getSortDir().equals("ASC")){
+				query.setSort(search.getSortBy(), ORDER.asc);
+			}
+			else{
+				query.setSort(search.getSortBy(), ORDER.desc);
+			}
+		}
+	}
 	/**
 	 * Set the number of rows to return
 	 * @param query

@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.upmc.isd.galaxyapi.search.backend.SolrOperation;
 import com.upmc.isd.galaxyapi.search.model.GalaxyError;
-import com.upmc.isd.galaxyapi.search.model.MARSCollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSCollectionSearch;
 
 @Path("/marsunsupersede")
 public class MARSUnsupersede {

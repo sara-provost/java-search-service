@@ -3,8 +3,8 @@ package com.upmc.isd.galaxyapi.search.backend;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import com.upmc.isd.galaxyapi.search.common.QueryUtilities;
-import com.upmc.isd.galaxyapi.search.model.HL7CollectionSearch;
-import com.upmc.isd.galaxyapi.search.model.MARSCollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7CollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSCollectionSearch;
 
 /**
  * This class defines the action that will be done against Solr. 

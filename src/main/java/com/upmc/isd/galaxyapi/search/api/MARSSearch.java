@@ -17,8 +17,9 @@ import com.upmc.isd.galaxyapi.search.backend.SolrOperation;
 import com.upmc.isd.galaxyapi.search.backend.SolrService;
 import com.upmc.isd.galaxyapi.search.common.LoggingUtilities;
 import com.upmc.isd.galaxyapi.search.model.GalaxyError;
-import com.upmc.isd.galaxyapi.search.model.MARSCollectionSearch;
 import com.upmc.isd.galaxyapi.search.model.SearchException;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSCollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.mars.MARSSearchResponse;
 
 @Path("/marssearch")
 public class MARSSearch {
@@ -46,13 +47,11 @@ public class MARSSearch {
 			solrClient = new SolrService();
 			
 			try {
-				solrClient.doMARSOperation(operation);
-				return Response.ok("{'Response':'ok'}", MediaType.APPLICATION_JSON).build();
+				MARSSearchResponse response = solrClient.doMARSOperation(operation);
+				return Response.ok(response, MediaType.APPLICATION_JSON).build();
 			} catch (SearchException e) {
-				GalaxyError error = new GalaxyError();
-				error.setDescription("Request could not be completed.");
-				error.setFriendlyMsg(e.getMessage());
-				return Response.status(500).entity(error).build();
+				
+				return Response.status(500).entity(e.getGalaxyError()).build();
 			}
 		}
 		

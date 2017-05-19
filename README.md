@@ -1,4 +1,7 @@
-Java search service.
-This is the version without swagger. 
+**Java Search REST API**
+----
+	To build and run this service using maven use: mvn clean package jetty:run
 
-mvn clean package jetty:run
+* **URL**
+	
+

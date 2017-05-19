@@ -21,9 +21,9 @@ import com.upmc.isd.galaxyapi.search.backend.SolrOperation;
 import com.upmc.isd.galaxyapi.search.backend.SolrService;
 import com.upmc.isd.galaxyapi.search.common.LoggingUtilities;
 import com.upmc.isd.galaxyapi.search.model.GalaxyError;
-import com.upmc.isd.galaxyapi.search.model.HL7CollectionSearch;
-import com.upmc.isd.galaxyapi.search.model.HL7SearchResponse;
 import com.upmc.isd.galaxyapi.search.model.SearchException;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7CollectionSearch;
+import com.upmc.isd.galaxyapi.search.model.hl7.HL7SearchResponse;
 
 @Path("/hl7search")
 public class HL7Search {
